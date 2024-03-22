@@ -1,0 +1,34 @@
+#install.package "vegan"
+library(vegan)
+
+#Attach data
+#Attach community data
+com<-read.csv("ScarabAbundanceKSCOMM.csv",header=TRUE,sep=",",row.names=c(1))
+attach(com)
+head(com)
+
+"attach habitat data"
+factors<-read.csv("ScarabAbundanceKSfactors.csv",header=TRUE,sep=",",row.names=c(1))
+attach(factors)
+head(factors)
+
+base_rda<-rda(com~trt+doy,factors,scale=TRUE)
+summary(base_rda)
+vif.cca(base_rda)
+
+ordiplot(base_rda,type="t")
+ordihull(base_rda,trt,scaling=2,label=TRUE)
+
+anova(base_rda)
+anova(base_rda,by="terms",perm=1000)
+anova(base_rda,by="axis",perm=1000)
+
+fig<-ordiplot(base_rda,type="none",scaling=3,xlab="RDA axis 1",ylab="RDA axis 2",xlim=c(-2.7,1.8),cex.lab=1.4)
+ordihull(base_rda,trt,scaling=3,label=F,lwd=2,col="grey80")
+points(fig,"sites",pch=c(16))
+
+#THIS PART OF THE CODE SHOWS AN ERROR ("eRROR: UNEXPEXTED ',')
+col=c(4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3),cex=2.2
+
+text(fig,"species",cex=.7,col="red4")
+legend("bottomleft",legend=c("Bison","Cattle"),bty="n",cex=2,pch=c(16),col=c(4,3))
