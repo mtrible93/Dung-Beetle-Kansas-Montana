@@ -3,10 +3,15 @@ setwd("C:/Users/elwel/OneDrive/Desktop/Dung-Beetle-Kansas-Montana/")
 
 library(lme4)
 
-db <- read.csv("RawData/bison_cattle_comp_MT.csv")
+db <- read.csv("RawData/full_communities/bison_cattle_comp_MT.csv")
 head(db)
 db$doy <- as.numeric(db$doy)
 am <- lmer(abund ~ trt + poly(doy,2) + (1|rep:sub),data=db)
+# extract coefficients
+coefs <- data.frame(coef(summary(am)))
+# use normal distribution to approximate p-value
+coefs$p.z <- 2 * (1 - pnorm(abs(coefs$t.value)))
+coefs
 rm <- lmer(richness ~ trt + poly(doy,2) + (1|rep:sub),data=db)
 # extract coefficients
 coefs <- data.frame(coef(summary(rm)))
